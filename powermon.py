@@ -54,8 +54,8 @@ while True:
         # update time
         mqttc.publish("{0}/last_update".format(config['mqtt_prefix']), now, retain=True)
 
-        # store to RRD - NOTE: strftime might behave differently on non-Linux systems
-        rrdtool.update(str(config['rrdfile']), 'N:{0}'.format(load))
+        # store to RRD
+        rrdtool.update(str(config['rrdfile']), 'N:{0}:{1}'.format(count.replace('.',''), load))
 
         # sleep until we reached the next interval
         time.sleep(config['frequency']-(time.mktime(time.gmtime())%config['frequency']))
