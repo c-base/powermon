@@ -66,3 +66,6 @@ target/
 
 # Lockfile
 powermon.lock
+
+# RRD data file
+powermon.rrd
