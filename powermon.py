@@ -3,6 +3,7 @@
 import sys
 import json
 import time
+import rrdtool
 import requests
 import paho.mqtt.client as mqtt
 
@@ -15,7 +16,8 @@ with open('/etc/c-base-powermon.json') as config_file:
 #    "mqtt_host":"mqtt.host.name",
 #    "mqtt_port":1883,
 #    "mqtt_prefix":"system/powermon",
-#    "frequency":1
+#    "rrdfile":"powermon.rrd",
+#    "frequency":15
 # }
 
 mqttc = mqtt.Client()
@@ -51,6 +53,9 @@ while True:
         mqttc.publish(config['mqtt_prefix'], '{{"last_update":"{0}","load":{1},"count":{2}}}'.format(now, load, count), retain=True)
         # update time
         mqttc.publish("{0}/last_update".format(config['mqtt_prefix']), now, retain=True)
+
+        # store to RRD - NOTE: strftime might behave differently on non-Linux systems
+        rrdtool.update(str(config['rrdfile']), 'N:{0}'.format(load))
 
         # FIXME: the sleep should take time spent into account
         time.sleep(config['frequency'])
