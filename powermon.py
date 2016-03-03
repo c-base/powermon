@@ -57,5 +57,5 @@ while True:
         # store to RRD - NOTE: strftime might behave differently on non-Linux systems
         rrdtool.update(str(config['rrdfile']), 'N:{0}'.format(load))
 
-        # FIXME: the sleep should take time spent into account
-        time.sleep(config['frequency'])
+        # sleep until we reached the next interval
+        time.sleep(config['frequency']-(time.mktime(time.gmtime())%config['frequency']))
