@@ -11,7 +11,7 @@
 
 rrdtool create powermon.rrd -O \
   --step 15 \
-  DS:count:COUNTER:300:580000000:10000000000 \
+  DS:count:COUNTER:300:0:25000000 \
   DS:load:GAUGE:300:0:25000 \
   RRA:MIN:0.5:1:5760 \
   RRA:MAX:0.5:1:5760 \
