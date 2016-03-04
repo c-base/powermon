@@ -70,3 +70,4 @@ powermon.lock
 # RRD data files
 powermon.rrd
 powermon.png
+powermon-long.png
