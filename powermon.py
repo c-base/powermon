@@ -62,8 +62,6 @@ counter = 0
 while (load_low == 99999 or load_high == 0 or load_low_date == "?" or load_high_date == "?") and counter < 30:
     mqttc.loop(timeout=1.0)
     counter += 1
-print(load_low)
-print(load_high)
 
 # unsubscribe again. if we didn't get data - too bad :(
 mqttc.unsubscribe('{0}/load_high'.format(config['mqtt_prefix']))
@@ -99,13 +97,11 @@ while True:
         if load <= load_low:
             load_low = load
             load_low_date = now
-            print("sending low")
             mqttc.publish("{0}/load_low".format(config['mqtt_prefix']), load_low, qos=1, retain=True)
             mqttc.publish("{0}/load_low_date".format(config['mqtt_prefix']), load_low_date, qos=1, retain=True)
         if load >= load_high:
             load_high = load
             load_high_date = now
-            print("sending high")
             mqttc.publish("{0}/load_high".format(config['mqtt_prefix']), load_high, qos=1, retain=True)
             mqttc.publish("{0}/load_high_date".format(config['mqtt_prefix']), load_high_date, qos=1, retain=True)
 
