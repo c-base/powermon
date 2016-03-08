@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>c-base power use</title>
+<meta name="description" content="c-base power use" />
+<style type="text/css">
+@font-face {
+  font-family: 'LED-16-Segment';
+    src:  url('/fonts/LED-16-Segment.ttf.woff') format('woff'),
+    url('/fonts/LED-16-Segment.ttf.svg#LED-16-Segment') format('svg'),
+    url('/fonts/LED-16-Segment.ttf.eot'),
+    url('/fonts/LED-16-Segment.eot?#iefix') format('embedded-opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+.datafont {
+  font-family: 'LED-16-Segment';
+  overflow: hidden;
+  font-size: 3.2em;
+}
+</style>
+<script src="/js/sprintf.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/Chart.min.js"></script>
+<script>
+var ctx1day;
+var chart1day;
+
+var data1day = {
+    labels: [],
+    datasets: [
+        {
+            label: "Load (Watt)",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
+};
+var data1week = {
+    labels: [],
+    datasets: [
+        {
+            label: "Load (Watt)",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
+};
+var data1month = {
+    labels: [],
+    datasets: [
+        {
+            label: "Load (Watt)",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
+};
+var data1year = {
+    labels: [],
+    datasets: [
+        {
+            label: "Load (Watt)",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
+};
+
+function update() {
+    $.getJSON("powermon.json", function current_data(data) {
+        $('#high').text(sprintf("high: %05d %s", data['load_high'], data['load_high_date']));
+        $('#now' ).text(sprintf("now : %05d %s", data['load'],      data['last_update']));
+        $('#low' ).text(sprintf("low : %05d %s", data['load_low'],  data['load_low_date']));
+    });
+    $.getJSON("powermon.cgi?1day", function long_data(data) {
+        if (data.data.length == chart1day.datasets[0].points.length) {
+            chart1day.labels = []
+            for (i=0; i<data.data.length; i++) {
+                chart1day.labels.push(data.meta.start+i*data.meta.step);
+                chart1day.datasets[0].points[i].value = data.data[i][0];
+            }
+        } else {
+            data1day.labels = []
+            for (i=0; i<data.data.length; i++) {
+                if (i % 10) {
+                    data1day.labels.push('');
+                } else {
+                    var date = new Date((data.meta.start+i*data.meta.step)*1000);
+                    data1day.labels.push(date.toJSON().replace(':00.000Z',''));
+                }
+                data1day.datasets[0].data.push(data.data[i][0]);
+            }
+            chart1day = new Chart(ctx1day).Line(data1day);
+        }
+        chart1day.update();
+    });
+    $.getJSON("powermon.cgi?1week", function long_data(data) {
+        if (data.data.length == chart1week.datasets[0].points.length) {
+            chart1week.labels = []
+            for (i=0; i<data.data.length; i++) {
+                chart1week.labels.push(data.meta.start+i*data.meta.step);
+                chart1week.datasets[0].points[i].value = data.data[i][0];
+            }
+        } else {
+            data1week.labels = []
+            for (i=0; i<data.data.length; i++) {
+                if (i % 10) {
+                    data1week.labels.push('');
+                } else {
+                    var date = new Date((data.meta.start+i*data.meta.step)*1000);
+                    data1week.labels.push(date.toJSON().replace(':00.000Z',''));
+                }
+                data1week.datasets[0].data.push(data.data[i][0]);
+            }
+            chart1week = new Chart(ctx1week).Line(data1week);
+        }
+        chart1week.update();
+    });
+    $.getJSON("powermon.cgi?1month", function long_data(data) {
+        if (data.data.length == chart1month.datasets[0].points.length) {
+            chart1month.labels = []
+            for (i=0; i<data.data.length; i++) {
+                chart1month.labels.push(data.meta.start+i*data.meta.step);
+                chart1month.datasets[0].points[i].value = data.data[i][0];
+            }
+        } else {
+            data1month.labels = []
+            for (i=0; i<data.data.length; i++) {
+                if (i % 10) {
+                    data1month.labels.push('');
+                } else {
+                    var date = new Date((data.meta.start+i*data.meta.step)*1000);
+                    data1month.labels.push(date.toJSON().replace(':00.000Z',''));
+                }
+                data1month.datasets[0].data.push(data.data[i][0]);
+            }
+            chart1month = new Chart(ctx1month).Line(data1month);
+        }
+        chart1month.update();
+    });
+    $.getJSON("powermon.cgi?1year", function long_data(data) {
+        if (data.data.length == chart1year.datasets[0].points.length) {
+            chart1year.labels = []
+            for (i=0; i<data.data.length; i++) {
+                chart1year.labels.push(data.meta.start+i*data.meta.step);
+                chart1year.datasets[0].points[i].value = data.data[i][0];
+            }
+        } else {
+            data1year.labels = []
+            for (i=0; i<data.data.length; i++) {
+                if (i % 10) {
+                    data1year.labels.push('');
+                } else {
+                    var date = new Date((data.meta.start+i*data.meta.step)*1000);
+                    data1year.labels.push(date.toJSON().replace(':00.000Z',''));
+                }
+                data1year.datasets[0].data.push(data.data[i][0]);
+            }
+            chart1year = new Chart(ctx1year).Line(data1year);
+        }
+        chart1year.update();
+    });
+}
+
+$(document).ready(function() {
+    ctx1day   = document.getElementById("chart1day").getContext("2d");
+    ctx1week  = document.getElementById("chart1week").getContext("2d");
+    ctx1month = document.getElementById("chart1month").getContext("2d");
+    ctx1year  = document.getElementById("chart1year").getContext("2d");
+    chart1day   = new Chart(ctx1day).Line(data1day);
+    chart1week  = new Chart(ctx1week).Line(data1week);
+    chart1month = new Chart(ctx1month).Line(data1month);
+    chart1year  = new Chart(ctx1year).Line(data1year);
+    update();
+    setInterval(update, 15000);
+});
+</script>
+</head>
+<body bgcolor="#000">
+<center>
+<div class="datafont" style="color: #c00" id="high">high: 00000 0000-00-00 00:00:00Z</div>
+<div class="datafont" style="color: #cc0" id="now" >now : 00000 0000-00-00 00:00:00Z</div>
+<div class="datafont" style="color: #0c0" id="low" >low : 00000 0000-00-00 00:00:00Z</div>
+<canvas id="chart1day"   width="765" height="400"></canvas>
+<canvas id="chart1week"  width="765" height="400"></canvas>
+<canvas id="chart1month" width="765" height="400"></canvas>
+<canvas id="chart1year"  width="765" height="400"></canvas>
+</center>
+</body>
+</html>
