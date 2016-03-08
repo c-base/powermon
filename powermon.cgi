@@ -9,4 +9,4 @@ if [ -z "${QUERY_STRING}" ]; then
 fi
 echo
 
-/usr/bin/rrdtool xport --json -s "end-${QUERY_STRING}" DEF:load=powermon.rrd:load:MAX "XPORT:load:Load over ${QUERY_STRING}"
+/usr/bin/rrdtool xport --json -s "end-${QUERY_STRING}" DEF:load=powermon.rrd:load:MAX DEF:counter=powermon.rrd:count:MAX "XPORT:load:Load over ${QUERY_STRING}" "XPORT:counter:Counter delta over ${QUERY_STRING}"
