@@ -100,7 +100,11 @@ function update() {
             chart1day.labels = []
             for (i=0; i<data.data.length; i++) {
                 chart1day.labels.push(data.meta.start+i*data.meta.step);
-                chart1day.datasets[0].points[i].value = data.data[i][0];
+                if (data.data[i][0] != null) {
+                    chart1day.datasets[0].points[i].value = data.data[i][0].toFixed(0);
+                } else {
+                    chart1day.datasets[0].points[i].value = null;
+                }
             }
         } else {
             data1day.labels = []
@@ -122,7 +126,11 @@ function update() {
             chart1week.labels = []
             for (i=0; i<data.data.length; i++) {
                 chart1week.labels.push(data.meta.start+i*data.meta.step);
-                chart1week.datasets[0].points[i].value = data.data[i][0];
+                if (data.data[i][0] != null) {
+                    chart1week.datasets[0].points[i].value = data.data[i][0].toFixed(0);
+                } else {
+                    chart1week.datasets[0].points[i].value = null;
+                }
             }
         } else {
             data1week.labels = []
@@ -144,7 +152,11 @@ function update() {
             chart1month.labels = []
             for (i=0; i<data.data.length; i++) {
                 chart1month.labels.push(data.meta.start+i*data.meta.step);
-                chart1month.datasets[0].points[i].value = data.data[i][0];
+                if (data.data[i][0] != null) {
+                    chart1month.datasets[0].points[i].value = data.data[i][0].toFixed(0);
+                } else {
+                    chart1month.datasets[0].points[i].value = null;
+                }
             }
         } else {
             data1month.labels = []
@@ -166,7 +178,11 @@ function update() {
             chart1year.labels = []
             for (i=0; i<data.data.length; i++) {
                 chart1year.labels.push(data.meta.start+i*data.meta.step);
-                chart1year.datasets[0].points[i].value = data.data[i][0];
+                if (data.data[i][0] != null) {
+                    chart1year.datasets[0].points[i].value = data.data[i][0].toFixed(0);
+                } else {
+                    chart1year.datasets[0].points[i].value = null;
+                }
             }
         } else {
             data1year.labels = []
@@ -204,10 +220,12 @@ $(document).ready(function() {
 <div class="datafont" style="color: #c00" id="high">high: 00000 0000-00-00 00:00:00Z</div>
 <div class="datafont" style="color: #cc0" id="now" >now : 00000 0000-00-00 00:00:00Z</div>
 <div class="datafont" style="color: #0c0" id="low" >low : 00000 0000-00-00 00:00:00Z</div>
-<canvas id="chart1day"   width="765" height="400"></canvas>
-<canvas id="chart1week"  width="765" height="400"></canvas>
-<canvas id="chart1month" width="765" height="400"></canvas>
-<canvas id="chart1year"  width="765" height="400"></canvas>
+<img src="powermon.png" witdth="737" height="223"><br/>
+<img src="powermon-long.png" witdth="737" height="223"><br/>
+<canvas id="chart1day"   width="737" height="400"></canvas>
+<canvas id="chart1week"  width="737" height="400"></canvas>
+<canvas id="chart1month" width="737" height="400"></canvas>
+<canvas id="chart1year"  width="737" height="400"></canvas>
 </center>
 </body>
 </html>
