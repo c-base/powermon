@@ -88,6 +88,7 @@ while True:
         mqttc.publish(config['mqtt_prefix'], json.dumps(data), retain=True)
         with open(config['datafile'], 'w+') as data_file:
             data_file.write(json.dumps(data))
+            data_file.write('\n')
 
         # update time
         mqttc.publish("{0}/last_update".format(config['mqtt_prefix']), now, retain=True)
