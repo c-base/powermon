@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 while inotifywait -qq -e close_write powermon.rrd; do
-    for PERIOD in 1hour 4hours 1day 3days 1week 1month 1year ; do
+    for PERIOD in 1hour 4hours 1day 3days 1week 1month 3months 1year ; do
         rrdtool graph powermon-${PERIOD}.png.new \
         --start end-${PERIOD} \
         --end now \

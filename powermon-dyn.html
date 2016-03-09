@@ -42,12 +42,13 @@ var data1hour = {
         }
     ]
 };
-var data4hours = $.extend(true, {}, data1hour);
-var data1day   = $.extend(true, {}, data1hour);
-var data3days  = $.extend(true, {}, data1hour);
-var data1week  = $.extend(true, {}, data1hour);
-var data1month = $.extend(true, {}, data1hour);
-var data1year  = $.extend(true, {}, data1hour);
+var data4hours  = $.extend(true, {}, data1hour);
+var data1day    = $.extend(true, {}, data1hour);
+var data3days   = $.extend(true, {}, data1hour);
+var data1week   = $.extend(true, {}, data1hour);
+var data1month  = $.extend(true, {}, data1hour);
+var data3months = $.extend(true, {}, data1hour);
+var data1year   = $.extend(true, {}, data1hour);
 
 var chart1hour;
 var chart4hours;
@@ -55,6 +56,7 @@ var chart1day;
 var chart3days;
 var chart1week;
 var chart1month;
+var chart3months;
 var chart1year;
 
 function chartUpdate(chart, ctx, datatemplate, data) {
@@ -85,13 +87,14 @@ function chartUpdate(chart, ctx, datatemplate, data) {
     return chart;
 }
 
-function up1hour(data)  { chart1hour  = chartUpdate(chart1hour,  ctx1hour,  data1hour,  data); }
-function up4hours(data) { chart4hours = chartUpdate(chart4hours, ctx4hours, data4hours, data); }
-function up1day  (data) { chart1day   = chartUpdate(chart1day,   ctx1day,   data1day,   data); }
-function up3days (data) { chart3days  = chartUpdate(chart3days,  ctx3days,  data3days,  data); }
-function up1week (data) { chart1week  = chartUpdate(chart1week,  ctx1week,  data1week,  data); }
-function up1month(data) { chart1month = chartUpdate(chart1month, ctx1month, data1month, data); }
-function up1year (data) { chart1year  = chartUpdate(chart1year,  ctx1year,  data1year,  data); }
+function up1hour  (data) { chart1hour   = chartUpdate(chart1hour,   ctx1hour,   data1hour,   data); }
+function up4hours (data) { chart4hours  = chartUpdate(chart4hours,  ctx4hours,  data4hours,  data); }
+function up1day   (data) { chart1day    = chartUpdate(chart1day,    ctx1day,    data1day,    data); }
+function up3days  (data) { chart3days   = chartUpdate(chart3days,   ctx3days,   data3days,   data); }
+function up1week  (data) { chart1week   = chartUpdate(chart1week,   ctx1week,   data1week,   data); }
+function up1month (data) { chart1month  = chartUpdate(chart1month,  ctx1month,  data1month,  data); }
+function up3months(data) { chart3months = chartUpdate(chart3months, ctx3months, data3months, data); }
+function up1year  (data) { chart1year   = chartUpdate(chart1year,   ctx1year,   data1year,   data); }
 
 function update() {
     $.getJSON("powermon.json", function current_data(data) {
@@ -100,23 +103,25 @@ function update() {
         $('#low' ).text(sprintf("low : %05d %s", data['load_low'],  strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_low_date']))));
     });
 
-    $.getJSON("powermon.cgi?1hour" , up1hour );
-    $.getJSON("powermon.cgi?4hours", up4hours);
-    $.getJSON("powermon.cgi?1day"  , up1day  );
-    $.getJSON("powermon.cgi?3days" , up3days );
-    $.getJSON("powermon.cgi?1week" , up1week );
-    $.getJSON("powermon.cgi?1month", up1month);
-    $.getJSON("powermon.cgi?1year" , up1year );
+    $.getJSON("powermon.cgi?1hour" ,  up1hour );
+    $.getJSON("powermon.cgi?4hours",  up4hours);
+    $.getJSON("powermon.cgi?1day"  ,  up1day  );
+    $.getJSON("powermon.cgi?3days" ,  up3days );
+    $.getJSON("powermon.cgi?1week" ,  up1week );
+    $.getJSON("powermon.cgi?1month",  up1month);
+    $.getJSON("powermon.cgi?3months", up3months);
+    $.getJSON("powermon.cgi?1year" ,  up1year );
 }
 
 $(document).ready(function() {
-    ctx1hour  = document.getElementById("chart1hour").getContext("2d");
-    ctx4hours = document.getElementById("chart4hours").getContext("2d");
-    ctx1day   = document.getElementById("chart1day").getContext("2d");
-    ctx3days  = document.getElementById("chart3days").getContext("2d");
-    ctx1week  = document.getElementById("chart1week").getContext("2d");
-    ctx1month = document.getElementById("chart1month").getContext("2d");
-    ctx1year  = document.getElementById("chart1year").getContext("2d");
+    ctx1hour   = document.getElementById("chart1hour").getContext("2d");
+    ctx4hours  = document.getElementById("chart4hours").getContext("2d");
+    ctx1day    = document.getElementById("chart1day").getContext("2d");
+    ctx3days   = document.getElementById("chart3days").getContext("2d");
+    ctx1week   = document.getElementById("chart1week").getContext("2d");
+    ctx1month  = document.getElementById("chart1month").getContext("2d");
+    ctx3months = document.getElementById("chart3months").getContext("2d");
+    ctx1year   = document.getElementById("chart1year").getContext("2d");
 
     update();
     setInterval(update, 15000);
@@ -134,6 +139,7 @@ $(document).ready(function() {
 <canvas id="chart3days"  width="737" height="400"></canvas><br/>
 <canvas id="chart1week"  width="737" height="400"></canvas><br/>
 <canvas id="chart1month" width="737" height="400"></canvas><br/>
+<canvas id="chart3months" width="737" height="400"></canvas><br/>
 <canvas id="chart1year"  width="737" height="400"></canvas><br/>
 </center>
 </body>
