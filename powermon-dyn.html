@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>c-base power use</title>
+<meta name="description" content="c-base power use" />
+<style type="text/css">
+@font-face {
+  font-family: 'LED-16-Segment';
+    src:  url('/fonts/LED-16-Segment.ttf.woff') format('woff'),
+    url('/fonts/LED-16-Segment.ttf.svg#LED-16-Segment') format('svg'),
+    url('/fonts/LED-16-Segment.ttf.eot'),
+    url('/fonts/LED-16-Segment.eot?#iefix') format('embedded-opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+  font-family: 'inconsolata';
+    src: url('/fonts/inconsolata-webfont.eot');
+    src: url('/fonts/inconsolata-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/inconsolata-webfont.woff') format('woff'),
+    url('/fonts/inconsolata-webfont.ttf') format('truetype'),
+    url('/fonts/inconsolata-webfont.svg#inconsolatamedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+.datafont {
+  font-family: 'inconsolata';
+  overflow: hidden;
+  font-size: 3.0em;
+}
+</style>
+<script src="/js/sprintf.min.js"></script>
+<script src="/js/strftime.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/Chart.min.js"></script>
+<script>
+var data1hour = {
+    labels: [],
+    datasets: [
+        {
+            label: "Load (Watt)",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: []
+        }
+    ]
+};
+var data4hours = $.extend(true, {}, data1hour);
+var data1day   = $.extend(true, {}, data1hour);
+var data3days  = $.extend(true, {}, data1hour);
+var data1week  = $.extend(true, {}, data1hour);
+var data1month = $.extend(true, {}, data1hour);
+var data1year  = $.extend(true, {}, data1hour);
+
+var chart1hour;
+var chart4hours;
+var chart1day;
+var chart3days;
+var chart1week;
+var chart1month;
+var chart1year;
+
+function chartUpdate(chart, ctx, datatemplate, data) {
+    if (typeof chart !== 'undefined' && data.data.length == chart.datasets[0].points.length) {
+        chart.labels = [];
+        for (i=0; i<data.data.length; i++) {
+            chart.labels.push(data.meta.start+i*data.meta.step);
+            if (data.data[i][0] != null) {
+                chart.datasets[0].points[i].value = data.data[i][0].toFixed(0);
+            } else {
+                chart.datasets[0].points[i].value = null;
+            }
+        }
+    } else {
+        datatemplate.labels = [];
+        for (i=0; i<data.data.length; i++) {
+             if (i % 10) {
+                 datatemplate.labels.push('');
+             } else {
+                 var date = new Date((data.meta.start+i*data.meta.step)*1000);
+                 datatemplate.labels.push(date.toJSON().replace(':00.000Z',''));
+             }
+             datatemplate.datasets[0].data.push(data.data[i][0]);
+        }
+        chart = new Chart(ctx).Line(datatemplate);
+    }
+    chart.update();
+    return chart;
+}
+
+function up1hour(data)  { chart1hour  = chartUpdate(chart1hour,  ctx1hour,  data1hour,  data); }
+function up4hours(data) { chart4hours = chartUpdate(chart4hours, ctx4hours, data4hours, data); }
+function up1day  (data) { chart1day   = chartUpdate(chart1day,   ctx1day,   data1day,   data); }
+function up3days (data) { chart3days  = chartUpdate(chart3days,  ctx3days,  data3days,  data); }
+function up1week (data) { chart1week  = chartUpdate(chart1week,  ctx1week,  data1week,  data); }
+function up1month(data) { chart1month = chartUpdate(chart1month, ctx1month, data1month, data); }
+function up1year (data) { chart1year  = chartUpdate(chart1year,  ctx1year,  data1year,  data); }
+
+function update() {
+    $.getJSON("powermon.json", function current_data(data) {
+        $('#high').text(sprintf("high: %05d %s", data['load_high'], strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_high_date']))));
+        $('#now' ).text(sprintf("now : %05d %s", data['load'],      strftime('%d.%m.%Y %H:%M:%S', new Date(data['last_update']))));
+        $('#low' ).text(sprintf("low : %05d %s", data['load_low'],  strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_low_date']))));
+    });
+
+    $.getJSON("powermon.cgi?1hour" , up1hour );
+    $.getJSON("powermon.cgi?4hours", up4hours);
+    $.getJSON("powermon.cgi?1day"  , up1day  );
+    $.getJSON("powermon.cgi?3days" , up3days );
+    $.getJSON("powermon.cgi?1week" , up1week );
+    $.getJSON("powermon.cgi?1month", up1month);
+    $.getJSON("powermon.cgi?1year" , up1year );
+}
+
+$(document).ready(function() {
+    ctx1hour  = document.getElementById("chart1hour").getContext("2d");
+    ctx4hours = document.getElementById("chart4hours").getContext("2d");
+    ctx1day   = document.getElementById("chart1day").getContext("2d");
+    ctx3days  = document.getElementById("chart3days").getContext("2d");
+    ctx1week  = document.getElementById("chart1week").getContext("2d");
+    ctx1month = document.getElementById("chart1month").getContext("2d");
+    ctx1year  = document.getElementById("chart1year").getContext("2d");
+
+    update();
+    setInterval(update, 15000);
+});
+</script>
+</head>
+<body bgcolor="#000">
+<center>
+<div class="datafont" style="color: #c00" id="high">high: 00000 0000-00-00 00:00:00Z</div>
+<div class="datafont" style="color: #cc0" id="now" >now : 00000 0000-00-00 00:00:00Z</div>
+<div class="datafont" style="color: #0c0" id="low" >low : 00000 0000-00-00 00:00:00Z</div>
+<canvas id="chart1hour"  width="737" height="400"></canvas><br/>
+<canvas id="chart4hours" width="737" height="400"></canvas><br/>
+<canvas id="chart1day"   width="737" height="400"></canvas><br/>
+<canvas id="chart3days"  width="737" height="400"></canvas><br/>
+<canvas id="chart1week"  width="737" height="400"></canvas><br/>
+<canvas id="chart1month" width="737" height="400"></canvas><br/>
+<canvas id="chart1year"  width="737" height="400"></canvas><br/>
+</center>
+</body>
+</html>

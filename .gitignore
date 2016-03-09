@@ -64,14 +64,14 @@ target/
 # Backups
 *~
 
-# Lockfile
+# Lockfiles
 powermon.lock
+graphloop.lock
 
 # RRD data files
 powermon.json
 powermon.rrd
-powermon.png
-powermon-long.png
+powermon-*.png
 powermon.xml
 powermon.xml.bz2
 powermon.xml.bz2
