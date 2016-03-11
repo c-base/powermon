@@ -81,8 +81,8 @@ while True:
             mqttc.publish("{0}/load_high_date".format(config['mqtt_prefix']), data['load_high_date'], qos=1, retain=True)
 
         # meter reading
-        data['count'] = "".join(parsed_data['cnt'].split()).replace(',','.')
-        mqttc.publish("{0}/count".format(config['mqtt_prefix']), data['count'], retain=True)
+        data['counter'] = "".join(parsed_data['cnt'].split()).replace(',','.')
+        mqttc.publish("{0}/counter".format(config['mqtt_prefix']), data['counter'], retain=True)
         # useful summary
         data['last_update'] = now
         mqttc.publish(config['mqtt_prefix'], json.dumps(data), retain=True)
@@ -94,7 +94,7 @@ while True:
         mqttc.publish("{0}/last_update".format(config['mqtt_prefix']), now, retain=True)
 
         # store to RRD
-        rrdtool.update(str(config['rrdfile']), 'N:{0}:{1}'.format(data['count'].replace('.',''), data['load']))
+        rrdtool.update(str(config['rrdfile']), 'N:{0}:{1}'.format(data['counter'].replace('.',''), data['load']))
 
         # sleep until we reached the next interval
         time.sleep(config['frequency']-(time.mktime(time.gmtime())%config['frequency']))
