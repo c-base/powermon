@@ -32,6 +32,11 @@ function update() {
         $('#high').text(sprintf("high: %05d %s", data['load_high'], strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_high_date']))));
         $('#now' ).text(sprintf("now : %05d %s", data['load'],      strftime('%d.%m.%Y %H:%M:%S', new Date(data['last_update']))));
         $('#low' ).text(sprintf("low : %05d %s", data['load_low'],  strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_low_date']))));
+
+        // calculate an average since known first counter
+        hours    = (new Date(data['last_update'])-new Date(data['first_counter_date']))/3600000;
+        load_avg = (data['counter']-data['first_counter'])/hours*1000;
+        $('#avg' ).text(sprintf("avg : %05d %s", load_avg,  strftime('%d.%m.%Y %H:%M:%S', new Date(data['first_counter_date']))));
     });
 
     // update all images by changing the timestamp in the str attribute
@@ -49,8 +54,9 @@ $(document).ready(function() {
 </head>
 <body bgcolor="#000">
 <center>
+<div class="datafont" style="color: #77f" id="now" >now : 00000 0000-00-00 00:00:00Z</div>
 <div class="datafont" style="color: #c00" id="high">high: 00000 0000-00-00 00:00:00Z</div>
-<div class="datafont" style="color: #cc0" id="now" >now : 00000 0000-00-00 00:00:00Z</div>
+<div class="datafont" style="color: #cc0" id="avg" >avg : 00000 0000-00-00 00:00:00Z</div>
 <div class="datafont" style="color: #0c0" id="low" >low : 00000 0000-00-00 00:00:00Z</div>
 <img src="powermon-1hour.png" witdth="737" height="223"><br/>
 <img src="powermon-4hours.png" witdth="737" height="223"><br/>
