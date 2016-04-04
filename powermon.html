@@ -44,7 +44,7 @@ function difference(response) {
         diff = data[lastset][1]-data[firstset][1];
 
         // dataset issues, skip that value
-        if (diff < 10000000) {
+        if (diff > 0 && diff < 10000000) {
             return diff;
         }
     }
@@ -61,11 +61,11 @@ function update() {
 
     // update averages
     $.when(
-      $.getJSON("https://vorstand.c-base.org/restricted/powermon.cgi?30days"),
+      $.getJSON("https://vorstand.c-base.org/restricted/powermon.cgi?1day"),
       $.getJSON("https://vorstand.c-base.org/restricted/powermon.cgi?1week"),
-      $.getJSON("https://vorstand.c-base.org/restricted/powermon.cgi?1day")
-    ).then(function process_averages(month, week, day) {
-      $('#avg').text(sprintf("avg : %05dmon %05dwk %05dday", difference(month)/(30*24),difference(week)/(7*24),difference(day)/24));
+      $.getJSON("https://vorstand.c-base.org/restricted/powermon.cgi?30days")
+    ).then(function process_averages(day, week, month) {
+      $('#avg').text(sprintf("avg : %05dday %05dwk %05dmon", difference(day)/24,difference(week)/(7*24),difference(month)/(30*24)));
     });
 
     // update all images by changing the timestamp in the str attribute
@@ -85,7 +85,7 @@ $(document).ready(function() {
 <center>
 <div class="datafont" style="color: #77f" id="now" >now : 00000 0000-00-00 00:00:00</div>
 <div class="datafont" style="color: #c00" id="high">high: 00000 0000-00-00 00:00:00</div>
-<div class="datafont" style="color: #cc0" id="avg" >avg : 00000mon 00000wk 00000day</div>
+<div class="datafont" style="color: #cc0" id="avg" >avg : 00000day 00000wk 00000mon</div>
 <div class="datafont" style="color: #0c0" id="low" >low : 00000 0000-00-00 00:00:00</div>
 <img src="powermon-1hour.png" witdth="737" height="223"><br/>
 <img src="powermon-4hours.png" witdth="737" height="223"><br/>
