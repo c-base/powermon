@@ -54,9 +54,15 @@ function difference(response) {
 function update() {
     // update current value and watermarks
     $.getJSON("powermon.json", function current_data(data) {
-        $('#high').text(sprintf("high: %05d %s", data['load_high'], strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_high_date']))));
-        $('#now' ).text(sprintf("now : %05d %s", data['load'],      strftime('%d.%m.%Y %H:%M:%S', new Date(data['last_update']))));
-        $('#low' ).text(sprintf("low : %05d %s", data['load_low'],  strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_low_date']))));
+        marker = ' ';
+        if (Date.now()-new Date(data['last_update']) > 3600000) {
+            // indicate stale data (older than an hour)
+            marker = '!';
+        };
+
+        $('#high').text(sprintf("high: %05d %s",  data['load_high'],         strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_high_date']))));
+        $('#now' ).text(sprintf("now : %05d%s%s", data['load'],      marker, strftime('%d.%m.%Y %H:%M:%S', new Date(data['last_update']))));
+        $('#low' ).text(sprintf("low : %05d %s",  data['load_low'],          strftime('%d.%m.%Y %H:%M:%S', new Date(data['load_low_date']))));
     });
 
     // update averages
