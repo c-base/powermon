@@ -69,7 +69,7 @@ while True:
         mqttc.publish("{0}/load".format(config['mqtt_prefix']), data['load'], retain=True)
 
         # compare with historic data
-        if data['load'] <= data['load_low']:
+        if data['load'] and data['load'] <= data['load_low']:
             data['load_low'] = data['load']
             data['load_low_date'] = now
             mqttc.publish("{0}/load_low".format(config['mqtt_prefix']), data['load_low'], qos=1, retain=True)
