@@ -67,8 +67,10 @@ target/
 # Lockfiles
 powermon.lock
 graphloop.lock
+pervavergraph.lock
 
 # RRD data files
+pervavergraph.rrd
 powermon.json
 powermon.rrd
 powermon-*.png
