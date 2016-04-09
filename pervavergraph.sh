@@ -15,6 +15,14 @@ DAY=`/usr/local/bin/json -f "${TMPDIR}/1day" [-1] [0]|/usr/bin/xargs /bin/echo|/
 WEEK=`/usr/local/bin/json -f "${TMPDIR}/1week" [-1] [0]|/usr/bin/xargs /bin/echo|/bin/sed -e 's% %-%'|/usr/bin/xargs -iFOO /bin/echo '(FOO)/(7*24)'|/usr/bin/bc`
 MONTH=`/usr/local/bin/json -f "${TMPDIR}/30days" [-1] [0]|/usr/bin/xargs /bin/echo|/bin/sed -e 's% %-%'|/usr/bin/xargs -iFOO /bin/echo '(FOO)/(30*24)'|/usr/bin/bc`
 
+if [ ${DAY} -gt 100000 ]; then
+    DAY='U'
+fi
+
+if [ ${WEEK} -gt 100000 ]; then
+    WEEK='U'
+fi
+
 if [ ${MONTH} -gt 100000 ]; then
     MONTH='U'
 fi
