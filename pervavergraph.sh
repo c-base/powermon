@@ -16,7 +16,7 @@ WEEK=`/usr/local/bin/json -f "${TMPDIR}/1week" [-1] [0]|/usr/bin/xargs /bin/echo
 MONTH=`/usr/local/bin/json -f "${TMPDIR}/30days" [-1] [0]|/usr/bin/xargs /bin/echo|/bin/sed -e 's% %-%'|/usr/bin/xargs -iFOO /bin/echo '(FOO)/(30*24)'|/usr/bin/bc`
 
 if [ ${MONTH} -gt 100000 ]; then
-    MONTH=0
+    MONTH='U'
 fi
 
 /usr/bin/rrdtool update pervavergraph.rrd "N:${DAY}:${WEEK}:${MONTH}"
