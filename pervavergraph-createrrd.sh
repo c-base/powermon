@@ -9,7 +9,8 @@
 # - stored summarized over 180x = 10800s = 3h for 180*146000 = 50years
 # - there have to be at least 50% of the values for summaries
 
-rrdtool create pervavergraph.rrd -O \
+rrdtool create pervavergraph-x.rrd -O \
+  -b 1457742300 \
   --step 60 \
   DS:day:GAUGE:3600:0:25000 \
   DS:week:GAUGE:3600:0:25000 \

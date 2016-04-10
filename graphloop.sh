@@ -1,9 +1,10 @@
 #!/bin/bash -e
 
 while inotifywait -qq -e close_write powermon.rrd; do
-    for PERIOD in 1hour 4hours 1day 3days 1week 1month 3months 1year ; do
-        rrdtool graph powermon-${PERIOD}.png.new \
-        --start end-${PERIOD} \
+    for PERIOD in '60 minutes' '4 hours' '24 hours' '3 days' '7 days' '1 month' '3 months' '1 year' ; do
+        FPERIOD=`echo ${PERIOD}|tr -d ' '`
+        rrdtool graph powermon-${FPERIOD}.png.new \
+        --start "end-${PERIOD}" \
         --end now \
         DEF:min=powermon.rrd:load:MIN \
         DEF:max=powermon.rrd:load:MAX \
@@ -27,9 +28,9 @@ while inotifywait -qq -e close_write powermon.rrd; do
         'AREA:avg#000000:Average' \
         'LINE1:min#333333:Min' \
         'LINE1:max#555555:Max' \
-        'LINE1:day#0000FF:Avg Day' \
-        'LINE1:week#46B6EE:Avg Week' \
-        'LINE1:mon#FF9900:Avg Month' \
-        >/dev/null && mv powermon-${PERIOD}.png.new powermon-${PERIOD}.png
+        'LINE1:week#6666FF:Avg Week' \
+        'LINE1:mon#33FF33:Avg Month' \
+        'LINE1:day#FF3333:Avg Day' \
+        >/dev/null && mv powermon-${FPERIOD}.png.new powermon-${FPERIOD}.png
     done
 done
