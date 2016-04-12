@@ -4,6 +4,10 @@ while inotifywait -qq -e close_write powermon.rrd; do
     for PERIOD in '60 minutes' '4 hours' '24 hours' '3 days' '7 days' '1 month' '3 months' '1 year' ; do
         FPERIOD=`echo ${PERIOD}|tr -d ' '`
         rrdtool graph powermon-${FPERIOD}.png.new \
+        -E \
+        -M \
+        --lower-limit 0 \
+        --upper-limit 16000 \
         --start "end-${PERIOD}" \
         --end now \
         DEF:min=powermon.rrd:load:MIN \

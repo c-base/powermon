@@ -4,8 +4,7 @@ TMPDIR=`mktemp -d`
 trap "rm -rf $TMPDIR" EXIT
 
 NOW=`date +%s`
-# rrdinfo pervavergraph.rrd | grep last_update
-START=1460324340
+START=`/usr/bin/rrdinfo pervavergraph.rrd | grep last_update | cut -d ' ' -f 3`
 TIME=${START}
 
 while [ $TIME -le ${NOW} ]; do
@@ -31,7 +30,7 @@ while [ $TIME -le ${NOW} ]; do
     WEEK='U'
   fi
 
-  if [ `/usr/bin/wc -l < "${TMPDIR}/30days"` -ge 80 ]; then
+  if [ `/usr/bin/wc -l < "${TMPDIR}/30days"` -ge 79 ]; then
     MONTH=`/usr/local/bin/json -f "${TMPDIR}/30days" [-1] [0]|/usr/bin/xargs /bin/echo|/bin/sed -e 's% %-%'|/usr/bin/xargs -iFOO /bin/echo '(FOO)/(30*24)'|/usr/bin/bc`
     if [ ${MONTH} -gt 100000 -o ${MONTH} -lt 1 ]; then
       MONTH='U'
